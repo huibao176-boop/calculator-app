@@ -22,13 +22,10 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync ios
 
-      - name: Install CocoaPods
-        run: cd ios/App && pod install
-
-      - name: Build IPA
+      - name: Build archive
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace \
+          xcodebuild -project App.xcodeproj \
             -scheme App \
             -configuration Release \
             -sdk iphoneos \
@@ -39,7 +36,7 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="" \
             archive
 
-      - name: Export IPA
+      - name: Create IPA
         run: |
           cd ios/App
           mkdir -p build/Payload
