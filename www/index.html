@@ -1,0 +1,957 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#ECEFF1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="计算器" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230A0C10'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='%23FFB020' font-family='sans-serif'%3E=%3C/text%3E%3C/svg%3E" />
+<title>计算器 · Calc</title>
+<style>
+:root{
+  /* 默认：浅色玻璃 */
+  --bg1:#dfe9ff; --bg2:#f0e7ff; --bg3:#ffe9e3;
+  --key-bg:rgba(255,255,255,.38);
+  --key-strong:rgba(255,255,255,.55);
+  --key-border:rgba(255,255,255,.6);
+  --key-shadow:0 8px 32px rgba(80,100,180,.15), inset 0 1px 0 rgba(255,255,255,.6);
+  --key-blur:blur(20px) saturate(180%);
+  --text:#2D3748; --dim:#6B7A90; --op:#FF8A00; --op-on:#FF8A00; --result:#1A202C;
+  --toggle-bg:rgba(255,255,255,.4);
+  --orb1:#FF8FB1; --orb2:#7C9EFF; --orb3:#FFD56B;
+  --orb-opacity:.7;
+}
+[data-theme="dark"]{
+  --bg1:#0f0c29; --bg2:#302b63; --bg3:#1a1a3e;
+  --key-bg:rgba(255,255,255,.12);
+  --key-strong:rgba(255,255,255,.2);
+  --key-border:rgba(255,255,255,.22);
+  --key-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);
+  --text:#E2E8F0; --dim:#9AA5B8; --op:#FFB020; --op-on:#FFB020; --result:#FFFFFF;
+  --toggle-bg:rgba(255,255,255,.15);
+  --orb1:#FF6A3D; --orb2:#5B6BFF; --orb3:#B56BFF;
+  --orb-opacity:.55;
+}
+[data-theme="metal"]{
+  --bg1:#e8ebee; --bg2:#c8cdd5; --bg3:#d8dde4;
+  --key-bg:linear-gradient(145deg,#f5f7fa 0%,#c8cdd5 100%);
+  --key-strong:linear-gradient(145deg,#ffffff 0%,#d0d5dd 100%);
+  --key-border:rgba(255,255,255,.7);
+  --key-shadow:0 6px 16px rgba(0,0,0,.18), inset 0 2px 3px rgba(255,255,255,.9), inset 0 -3px 6px rgba(0,0,0,.1);
+  --key-blur:none;
+  --text:#3a4050; --dim:#7a8290; --op:#C87533; --op-on:#C87533; --result:#2a3040;
+  --toggle-bg:rgba(255,255,255,.5);
+  --orb1:#d0d5dd; --orb2:#b8bec8; --orb3:#e0e4ea;
+  --orb-opacity:.35;
+}
+[data-theme="nature"]{
+  --bg1:#ffffff; --bg2:#e8f5e9; --bg3:#d7efdc;
+  --key-bg:#ffffff;
+  --key-strong:#f0f7f1;
+  --key-border:rgba(46,93,58,.12);
+  --key-shadow:0 6px 18px rgba(46,93,58,.12), inset 0 1px 0 rgba(255,255,255,.8);
+  --key-blur:none;
+  --text:#2e5d3a; --dim:#7aa587; --op:#FF9800; --op-on:#FF9800; --result:#1e4d2a;
+  --toggle-bg:rgba(255,255,255,.6);
+  --orb1:#a5d6a7; --orb2:#c8e6c9; --orb3:#fff9c4;
+  --orb-opacity:.4;
+}
+[data-theme="paper"]{
+  --bg1:#f5f1e8; --bg2:#ece5d5; --bg3:#f0ebe0;
+  --key-bg:linear-gradient(145deg,#faf6ec 0%,#e8e0cc 100%);
+  --key-strong:linear-gradient(145deg,#fffaf0 0%,#dcd4c0 100%);
+  --key-border:rgba(120,100,70,.25);
+  --key-shadow:0 4px 10px rgba(90,70,40,.2), inset 0 1px 0 rgba(255,255,255,.6);
+  --key-blur:none;
+  --text:#5a4a3a; --dim:#a09080; --op:#F5821F; --op-on:#F5821F; --result:#3a2e20;
+  --toggle-bg:rgba(255,255,255,.5);
+  --orb1:#d7ccc8; --orb2:#e8e0d0; --orb3:#fff9c4;
+  --orb-opacity:.3;
+}
+[data-theme="cream"]{
+  --bg1:#f5f0e8; --bg2:#ede6d8; --bg3:#f0ebe0;
+  --key-bg:#f0ebe0;
+  --key-strong:#faf5eb;
+  --key-border:transparent;
+  --key-shadow:8px 8px 16px rgba(180,165,140,.5), -8px -8px 16px rgba(255,255,255,.8);
+  --key-blur:none;
+  --text:#3a3a3a; --dim:#a09888; --op:#FF9800; --op-on:#FF9800; --result:#2a2a2a;
+  --toggle-bg:#f0ebe0;
+  --orb1:#e8dfd0; --orb2:#f0e8d8; --orb3:#fff5e0;
+  --orb-opacity:.3;
+}
+[data-theme="metal3d"]{
+  --bg1:#1a1d24; --bg2:#2a2d36; --bg3:#15171d;
+  --key-bg:linear-gradient(145deg,#e8e8e8 0%,#9a9a9a 45%,#cfcfcf 55%,#b0b0b0 100%);
+  --key-strong:linear-gradient(145deg,#f5f5f5 0%,#b0b0b0 50%,#d8d8d8 100%);
+  --key-border:rgba(255,255,255,.3);
+  --key-shadow:0 8px 16px rgba(0,0,0,.5), inset 0 2px 3px rgba(255,255,255,.9), inset 0 -4px 8px rgba(0,0,0,.35);
+  --key-blur:none;
+  --text:#2a2a2a; --dim:#8a8a8a; --op:#FFD700; --op-on:#E6B800; --result:#FFFFFF;
+  --toggle-bg:rgba(255,255,255,.15);
+  --orb1:#555; --orb2:#333; --orb3:#777;
+  --orb-opacity:.25;
+}
+
+  background:
+    repeating-linear-gradient(100deg, rgba(255,255,255,.12) 0px, rgba(255,255,255,.12) 1px, transparent 1px, transparent 3px),
+    linear-gradient(145deg,#e8e8e8 0%,#9a9a9a 45%,#cfcfcf 55%,#b0b0b0 100%);
+}
+[data-theme="metal3d"] .key.op{
+  color:#3a2a00;
+  background:
+    repeating-linear-gradient(100deg, rgba(255,255,255,.2) 0px, rgba(255,255,255,.2) 1px, transparent 1px, transparent 3px),
+    linear-gradient(145deg,#FFE58A 0%,#D4A017 45%,#FFD700 55%,#C89000 100%);
+  border-color:rgba(255,255,255,.4);
+  box-shadow:0 8px 16px rgba(0,0,0,.5), inset 0 2px 3px rgba(255,255,255,.8), inset 0 -4px 8px rgba(120,80,0,.4);
+}
+[data-theme="metal3d"] .key.op.on{
+  background:linear-gradient(145deg,#FFF0A0,#E6B800);
+  color:#3a2a00;
+}
+[data-theme="metal3d"] .key.ac{color:#2a2a2a}
+[data-theme="metal3d"] .key.back{color:#2a2a2a}
+[data-theme="metal3d"] .key.pct{color:#2a2a2a}
+
+/* 复古撕纸主题 */
+[data-theme="retro"]{
+  --bg1:#faf8f3; --bg2:#f3efe6; --bg3:#f7f4ed;
+  --key-bg:#e8e4da;
+  --key-strong:#f5f2e9;
+  --key-border:rgba(120,100,70,.2);
+  --key-shadow:2px 3px 6px rgba(90,70,40,.18), inset 0 1px 0 rgba(255,255,255,.5);
+  --key-blur:none;
+  --text:#3a3228; --dim:#a89e8c; --op:#F5821F; --op-on:#F5821F; --result:#2a2418;
+  --toggle-bg:#f5f2e9;
+  --orb1:#e0d8c8; --orb2:#ece5d5; --orb3:#f5edd8;
+  --orb-opacity:.25;
+}
+[data-theme="retro"] body{-webkit-tap-highlight-color:transparent;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+    linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+}
+
+  /* 不规则边缘 = 手撕纸感 */
+  border-radius: 25% 70% 60% 30% / 50% 30% 70% 40%;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"),
+    var(--key-bg);
+}
+[data-theme="retro"] .key:nth-child(4n+2){ border-radius:60% 30% 25% 70% / 30% 60% 40% 60%; }
+[data-theme="retro"] .key:nth-child(4n+3){ border-radius:40% 60% 30% 70% / 60% 40% 70% 30%; }
+[data-theme="retro"] .key.op{
+  color:#fff;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E"),
+    linear-gradient(145deg,#FFA040,#F5821F);
+  border-color:rgba(255,255,255,.3);
+}
+[data-theme="retro"] .screen{
+  /* 便签纸效果 */
+  background:#fdfbf5;
+  border:1px solid #e0d8c8;
+  border-radius:4px;
+  box-shadow:0 4px 12px rgba(90,70,40,.15);
+  padding:20px 28px 18px;
+  margin:0 18px 10px;
+}
+[data-theme="retro"] .result{font-weight:500}
+
+/* ===== 追加 10 套主题（立体材质版） ===== */
+[data-theme="cyber"]{
+  --bg1:#0a0a1a; --bg2:#1a0a2e; --bg3:#0a1a2e;
+  --key-bg:linear-gradient(145deg,#1a1a3e,#0d0d24);
+  --key-strong:linear-gradient(145deg,#2a2a4e,#1a1a34);
+  --key-border:rgba(0,255,255,.5);
+  --key-shadow:0 0 20px rgba(0,255,255,.25), 0 6px 16px rgba(0,0,0,.5), inset 0 1px 0 rgba(0,255,255,.3), inset 0 -2px 4px rgba(0,0,0,.4);
+  --key-blur:none;
+  --text:#00ffff; --dim:#7a8aff; --op:#FF00FF; --op-on:#FF00FF; --result:#00ffff;
+  --toggle-bg:#1a1a3e;
+  --orb1:#FF00FF; --orb2:#00ffff; --orb3:#FF6600; --orb-opacity:.3;
+}
+[data-theme="cyber"] .key.op{
+  color:#fff;
+  background:linear-gradient(145deg,#FF00FF,#aa00aa);
+  box-shadow:0 0 24px rgba(255,0,255,.5), 0 6px 16px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.4);
+}
+[data-theme="wood"] .key.op{
+  color:#3e2723;
+  background:linear-gradient(145deg,#FFCC80,#FF8F00);
+  box-shadow:0 6px 14px rgba(0,0,0,.4), inset 0 2px 3px rgba(255,255,255,.6), inset 0 -4px 8px rgba(120,60,0,.3);
+}
+[data-theme="jelly"]{
+  --bg1:#fff3e0; --bg2:#e8f5e9; --bg3:#e3f2fd;
+  --key-bg:linear-gradient(145deg,#ffffff,#fff0f5);
+  --key-strong:linear-gradient(145deg,#fff8fa,#ffeef2);
+  --key-border:rgba(255,180,200,.4);
+  --key-shadow:inset 0 -6px 12px rgba(255,107,157,.25), inset 0 6px 12px rgba(255,255,255,.9), 0 8px 20px rgba(255,107,157,.15);
+  --key-blur:none;
+  --text:#5a4a3a; --dim:#b0a090; --op:#FF6B9D; --op-on:#FF6B9D; --result:#3a2a1a;
+  --toggle-bg:#ffffff;
+  --orb1:#FFB6C1; --orb2:#C8E6C9; --orb3:#BBDEFB; --orb-opacity:.6;
+}
+[data-theme="jelly"] .key.op{
+  color:#fff;
+  background:linear-gradient(145deg,#FF8FAB,#E91E63);
+  box-shadow:inset 0 -4px 8px rgba(0,0,0,.2), inset 0 4px 8px rgba(255,255,255,.4), 0 8px 20px rgba(233,30,99,.3);
+}
+[data-theme="sakura"] .key.op{
+  color:#fff;
+  background:linear-gradient(145deg,#F06292,#C2185B);
+  box-shadow:0 6px 16px rgba(255,64,129,.4), inset 0 2px 3px rgba(255,255,255,.4);
+}
+[data-theme="mint"]{
+  --bg1:#e0f2f1; --bg2:#b2dfdb; --bg3:#e8f5e9;
+  --key-bg:linear-gradient(145deg,#ffffff,#e0f2f1);
+  --key-strong:linear-gradient(145deg,#f5fbf9,#d0e8e4);
+  --key-border:#80cbc4;
+  --key-shadow:0 6px 16px rgba(0,105,92,.2), inset 0 2px 3px rgba(255,255,255,.9), inset 0 -3px 6px rgba(0,105,92,.15);
+  --key-blur:none;
+  --text:#004d40; --dim:#4db6ac; --op:#00897b; --op-on:#00897b; --result:#00251f;
+  --toggle-bg:#ffffff;
+  --orb1:#80cbc4; --orb2:#b2dfdb; --orb3:#a7ffeb; --orb-opacity:.5;
+}
+[data-theme="mint"] .key.op{
+  color:#fff;
+  background:linear-gradient(145deg,#4DB6AC,#00796B);
+  box-shadow:0 6px 16px rgba(0,137,123,.4), inset 0 2px 3px rgba(255,255,255,.3);
+}
+[data-theme="sunset"]{
+  --bg1:#2d1b4e; --bg2:#c2325a; --bg3:#f39c12;
+  --key-bg:rgba(255,255,255,.18);
+  --key-strong:rgba(255,255,255,.3);
+  --key-border:rgba(255,255,255,.4);
+  --key-shadow:0 8px 20px rgba(0,0,0,.4), inset 0 2px 3px rgba(255,255,255,.3), inset 0 -3px 6px rgba(0,0,0,.2);
+  --key-blur:blur(14px);
+  --text:#fff; --dim:rgba(255,255,255,.7); --op:#FFD54F; --op-on:#FFD54F; --result:#fff;
+  --toggle-bg:rgba(255,255,255,.2);
+  --orb1:#FF6B6B; --orb2:#FFD93D; --orb3:#A66CFF; --orb-opacity:.4;
+}
+[data-theme="sunset"] .key.op{
+  color:#4a2a00;
+  background:linear-gradient(145deg,#FFE082,#FFA000);
+  box-shadow:0 8px 20px rgba(255,213,79,.4), inset 0 2px 3px rgba(255,255,255,.5), inset 0 -3px 6px rgba(150,90,0,.3);
+}
+[data-theme="ocean"]{
+  --bg1:#0d1b3e; --bg2:#1a3a5c; --bg3:#0d2b4e;
+  --key-bg:linear-gradient(145deg,#1a3a5c,#0d1b3e);
+  --key-strong:linear-gradient(145deg,#2a4a6c,#1a2b4e);
+  --key-border:rgba(100,200,255,.4);
+  --key-shadow:0 8px 20px rgba(0,0,0,.5), inset 0 2px 3px rgba(100,200,255,.3), inset 0 -3px 6px rgba(0,0,0,.4);
+  --key-blur:none;
+  --text:#80d8ff; --dim:#4a8ab5; --op:#40c4FF; --op-on:#40c4FF; --result:#e0f7fa;
+  --toggle-bg:#1a3a5c;
+  --orb1:#0288d1; --orb2:#03a9f4; --orb3:#26c6da; --orb-opacity:.3;
+}
+[data-theme="ocean"] .key.op{
+  color:#003049;
+  background:linear-gradient(145deg,#4FC3F7,#0288D1);
+  box-shadow:0 8px 20px rgba(64,196,255,.4), inset 0 2px 3px rgba(255,255,255,.4);
+}
+html,body{-webkit-tap-highlight-color:transparent;height:100%;overflow:hidden}
+body{-webkit-tap-highlight-color:transparent;
+  margin:0;
+  background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);
+  background-size:180% 180%;
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+  overscroll-behavior:none;
+  display:flex;justify-content:center;align-items:flex-end;
+  position:relative;
+  transition:background .4s ease, color .3s ease;
+}
+.orb{position:fixed;border-radius:50%;filter:blur(60px);z-index:0;pointer-events:none;opacity:var(--orb-opacity);will-change:transform}
+.orb.o1{width:340px;height:340px;background:var(--orb1);top:-80px;right:-60px;animation:drift1 16s ease-in-out infinite}
+.orb.o2{width:320px;height:320px;background:var(--orb2);bottom:-100px;left:-80px;animation:drift2 20s ease-in-out infinite}
+.orb.o3{width:240px;height:240px;background:var(--orb3);top:38%;left:42%;animation:drift3 18s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(36px,-30px)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-24px,24px) scale(1.15)}}
+.app{
+  position:relative;z-index:2;
+  width:100%;max-width:430px;height:100vh;height:100dvh;max-height:900px;
+  display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px 0}
+.theme-btn{
+  width:38px;height:38px;border-radius:50%;border:1px solid var(--key-border);
+  background:var(--toggle-bg);backdrop-filter:var(--key-blur);-webkit-backdrop-filter:var(--key-blur);
+  color:var(--text);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  transition:transform .15s ease, background .3s ease;
+}
+.theme-btn:active{transform:scale(.9)}
+.screen{flex:1 1 auto;min-height:200px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;
+  gap:10px;padding:0 28px 16px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.history{width:100%;display:flex;flex-direction:column;gap:2px;justify-content:flex-end;margin-bottom:8px}
+.history:empty{display:none}
+.hist-row{display:flex;flex-direction:column;align-items:flex-end;line-height:1.3}
+.hist-expr{font-size:15px;color:var(--dim);font-variant-numeric:tabular-nums}
+.hist-res{font-size:22px;color:var(--dim);font-variant-numeric:tabular-nums}
+.expr{font-size:20px;color:var(--dim);min-height:28px;max-width:100%;white-space:normal;word-break:break-all;line-height:1.4;font-variant-numeric:tabular-nums}
+.result{
+  font-size:clamp(48px,14vw,72px);font-weight:300;line-height:1;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;text-align:right;max-width:100%;word-break:break-all;
+  color:var(--result);
+  transition:font-size .15s ease, color .3s ease;
+}
+.result.small{font-size:clamp(38px,11vw,56px)}
+.result.tiny{font-size:clamp(28px,8vw,40px)}
+.result.err{color:#FF5252}
+.pad{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(5,1fr);
+  gap:14px;padding:0 18px 22px}
+.key{
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+  border:1px solid var(--key-border);margin:0;padding:0;font:inherit;
+  display:flex;align-items:center;justify-content:center;
+  width:100%;aspect-ratio:1;align-self:center;justify-self:center;
+  border-radius:50%;
+  background:var(--key-bg);
+  backdrop-filter:var(--key-blur);-webkit-backdrop-filter:var(--key-blur);
+  box-shadow:var(--key-shadow);
+  color:var(--text);
+  font-size:clamp(28px,8vw,38px);font-weight:400;
+  touch-action:manipulation;cursor:pointer;
+  transition:transform .1s ease, background .3s ease, box-shadow .15s ease, color .3s ease, filter .1s ease;
+}
+.key:active{transform:scale(.92);filter:brightness(1.25);background:var(--key-strong);box-shadow:inset 0 4px 10px rgba(0,0,0,.2), inset 0 -1px 0 rgba(255,255,255,.1)}
+.key:focus-visible{outline:2px solid var(--op);outline-offset:3px}
+.key.op{color:var(--op)}
+.key.op.on{background:var(--op-on);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(245,130,31,.4)}
+.key.ac{font-size:clamp(22px,6vw,28px)}
+.key.back{font-size:clamp(22px,6vw,28px)}
+.key.pct{font-size:clamp(24px,6.5vw,30px)}
+#selftest{display:none}
+html[data-selftest] #selftest{
+  display:block;position:fixed;inset:auto 12px 12px 12px;max-height:72vh;overflow:auto;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(20px);
+  border:1px solid rgba(0,0,0,.08);border-radius:12px;
+  padding:12px 14px;font:12px/1.7 ui-monospace,Consolas,monospace;color:#1A2238;
+  white-space:pre-wrap;z-index:99;box-shadow:0 18px 50px rgba(0,0,0,.15);
+}
+@media (prefers-reduced-motion:reduce){
+  .key,.result{transition:none}
+  .orb{animation:none}
+  .raindrop{animation:none !important}
+}
+/* 下雨效果（简洁版） */
+.rain{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.raindrop{
+  position:absolute;top:-20%;width:2px;height:90px;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.6));
+  animation:rainfall linear infinite;
+  border-radius:1px;
+}
+[data-theme="dark"] .raindrop{background:linear-gradient(180deg,transparent,rgba(180,200,255,.5))}
+@keyframes rainfall{
+  0%{transform:translateY(-10vh)}
+  100%{transform:translateY(110vh)}
+}
+/* 主题选择面板 */
+.theme-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.theme-modal[hidden]{display:none}
+.theme-mask{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:fadeIn .2s ease}
+.theme-panel{
+  position:relative;width:100%;max-width:430px;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-radius:24px 24px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -10px 40px rgba(0,0,0,.2);
+  animation:slideUp .25s cubic-bezier(.2,.8,.3,1);
+  max-height:75vh;display:flex;flex-direction:column;
+}
+.theme-list{display:flex;flex-direction:column;gap:8px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+[data-theme="dark"] .theme-panel{background:rgba(30,30,50,.85);color:#E2E8F0}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.theme-panel-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:14px;text-align:center;opacity:.7}
+.theme-list{display:flex;flex-direction:column;gap:8px}
+.theme-item{
+  display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:16px;
+  cursor:pointer;transition:background .15s ease;border:1px solid transparent;
+}
+.theme-item:hover{background:rgba(0,0,0,.04)}
+[data-theme="dark"] .theme-item:hover{background:rgba(255,255,255,.08)}
+.theme-item.active{background:rgba(37,99,235,.1);border-color:rgba(37,99,235,.3)}
+[data-theme="dark"] .theme-item.active{background:rgba(255,176,32,.12);border-color:rgba(255,176,32,.3)}
+.theme-swatch{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(255,255,255,.8);box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.theme-info{flex:1;min-width:0}
+.theme-name{font-size:15px;font-weight:600;color:var(--text)}
+.theme-desc{font-size:12px;color:var(--dim);margin-top:2px}
+.theme-check{font-size:16px;color:var(--op);opacity:0}
+.theme-item.active .theme-check{opacity:1}
+</style>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<div class="rain" id="rain"></div>
+<div class="app">
+  <div class="topbar">
+    <button type="button" id="themeToggle" class="theme-btn" aria-label="切换主题" title="切换主题">☼</button>
+    <button type="button" id="soundToggle" class="theme-btn" aria-label="切换音效" title="切换音效">🎵</button>
+    <button type="button" id="rainToggle" class="theme-btn" aria-label="切换下雨" title="下雨开关">🌧</button>
+  </div>
+  <div id="themeModal" class="theme-modal" hidden>
+    <div class="theme-mask" id="themeMask"></div>
+    <div class="theme-panel">
+      <div class="theme-panel-title">选择主题</div>
+      <div id="themeList" class="theme-list"></div>
+    </div>
+  </div>
+  <section class="screen">
+    <div class="history" id="history"></div>
+    <div class="expr" id="expr">&nbsp;</div>
+    <div class="result" id="result">0</div>
+  </section>
+  <div class="pad" id="pad">
+    <button type="button" class="key ac" data-k="ac" aria-label="清除">AC</button>
+    <button type="button" class="key back" data-k="neg" aria-label="正负号">+/−</button>
+    <button type="button" class="key pct" data-k="pct" aria-label="百分比">%</button>
+    <button type="button" class="key op" data-k="/" aria-label="除号">÷</button>
+
+    <button type="button" class="key" data-k="7">7</button>
+    <button type="button" class="key" data-k="8">8</button>
+    <button type="button" class="key" data-k="9">9</button>
+    <button type="button" class="key op" data-k="*" aria-label="乘号">×</button>
+
+    <button type="button" class="key" data-k="4">4</button>
+    <button type="button" class="key" data-k="5">5</button>
+    <button type="button" class="key" data-k="6">6</button>
+    <button type="button" class="key op" data-k="-" aria-label="减号">−</button>
+
+    <button type="button" class="key" data-k="1">1</button>
+    <button type="button" class="key" data-k="2">2</button>
+    <button type="button" class="key" data-k="3">3</button>
+    <button type="button" class="key op" data-k="+" aria-label="加号">+</button>
+
+    <button type="button" class="key back" data-k="back" aria-label="退格">⌫</button>
+    <button type="button" class="key" data-k="0">0</button>
+    <button type="button" class="key" data-k="." aria-label="小数点">.</button>
+    <button type="button" class="key op" data-k="=" aria-label="等于">=</button>
+  </div>
+</div>
+<pre id="selftest"></pre>
+<script>
+/* ENGINE-START */
+const CALC_ERR = '错误';
+const SYM = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+const OPS = {
+  '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
+  '*': (a, b) => a * b,
+  '/': (a, b) => (b === 0 ? NaN : a / b)
+};
+
+/* 结果格式化：修正二进制浮点误差 + 超范围走科学计数法 */
+function fmtNumber(n) {
+  if (typeof n !== 'number' || !isFinite(n)) return CALC_ERR;
+  let v = Number(n.toPrecision(12));
+  if (Object.is(v, -0)) v = 0;
+  const abs = Math.abs(v);
+  if (abs !== 0 && (abs >= 1e12 || abs < 1e-9)) {
+    /* 无参 toExponential() = 最短往返表示，绝不会有舍入导致的量级跳变 */
+    return v.toExponential().replace('e+', 'e');
+  }
+  return String(v);
+}
+
+/* 计算状态机：顺序计算（与主流手机计算器一致） */
+function createCalc() {
+  const st = { cur: '0', acc: null, op: null, fresh: true, lastOp: null, lastRhs: null, expr: '' };
+  const isErr = () => st.cur === CALC_ERR;
+
+  function reset() {
+    st.cur = '0'; st.acc = null; st.op = null; st.fresh = true;
+    st.lastOp = null; st.lastRhs = null; st.expr = '';
+  }
+
+  function press(k) {
+    if (typeof k !== 'string') return;
+
+    if (k >= '0' && k <= '9') {
+      if (isErr()) reset();
+      if (st.fresh) { st.cur = k; st.fresh = false; }
+      else if (st.cur.replace(/[-.]/g, '').length < 12) {
+        st.cur = st.cur === '0' ? k : st.cur + k;
+      }
+      return;
+    }
+
+    if (k === '.') {
+      if (isErr()) reset();
+      if (st.fresh) { st.cur = '0.'; st.fresh = false; return; }
+      if (st.cur.indexOf('.') < 0) st.cur += '.';
+      return;
+    }
+
+    if (k === 'ac') { reset(); return; }
+
+    if (k === 'back') {
+      if (isErr()) { reset(); return; }
+      if (st.fresh) return;
+      let s = st.cur.slice(0, -1);
+      if (s === '' || s === '-') s = '0';
+      st.cur = s;
+      return;
+    }
+
+    if (k === 'neg') {
+      if (isErr() || st.cur === '0') return;
+      st.cur = st.cur.charAt(0) === '-' ? st.cur.slice(1) : '-' + st.cur;
+      return;
+    }
+
+    if (k === 'pct') {
+      if (isErr()) return;
+      st.cur = fmtNumber(Number(st.cur) / 100);
+      st.fresh = true;
+      return;
+    }
+
+    if (k === '+' || k === '-' || k === '*' || k === '/') {
+      if (isErr()) return;
+      if (st.op && !st.fresh) {
+        const r = OPS[st.op](st.acc, Number(st.cur));
+        st.acc = r;
+        st.cur = fmtNumber(r);
+      } else if (!st.op) {
+        st.acc = Number(st.cur);
+      }
+      st.op = k;
+      st.fresh = true;
+      st.lastOp = null; st.lastRhs = null;
+      st.expr = fmtNumber(st.acc) + ' ' + SYM[k];
+      return;
+    }
+
+    if (k === '=') {
+      if (isErr()) return;
+      if (st.op) {
+        const a = st.acc;
+        const rhs = Number(st.cur);
+        const r = OPS[st.op](a, rhs);
+        st.expr = fmtNumber(a) + ' ' + SYM[st.op] + ' ' + fmtNumber(rhs) + ' =';
+        st.cur = fmtNumber(r);
+        st.lastOp = st.op; st.lastRhs = rhs;
+        st.op = null; st.acc = null; st.fresh = true;
+      } else if (st.lastOp) {
+        const base = Number(st.cur);
+        const r = OPS[st.lastOp](base, st.lastRhs);
+        st.expr = fmtNumber(base) + ' ' + SYM[st.lastOp] + ' ' + fmtNumber(st.lastRhs) + ' =';
+        st.cur = fmtNumber(r);
+        st.fresh = true;
+      }
+      return;
+    }
+  }
+
+  return {
+    press,
+    reset,
+    get display() { return st.cur; },
+    get expression() { return st.expr; },
+    get error() { return isErr(); },
+    get state() { return { cur: st.cur, acc: st.acc, op: st.op, fresh: st.fresh }; }
+  };
+}
+/* ENGINE-END */
+
+/* ============ 界面绑定 ============ */
+(function initUI() {
+  const calc = createCalc();
+  const exprEl = document.getElementById('expr');
+  const resEl = document.getElementById('result');
+  const histEl = document.getElementById('history');
+  const padEl = document.getElementById('pad');
+  const opEls = Array.prototype.slice.call(padEl.querySelectorAll('.key.op'));
+  const history = [];
+  let exprStr = '';  // 用户输入的完整表达式预览
+
+  function render() {
+    const d = calc.display;
+    const err = calc.error;
+    resEl.textContent = d;
+    resEl.classList.toggle('err', err);
+    resEl.classList.toggle('small', !err && d.length > 11 && d.length <= 15);
+    resEl.classList.toggle('tiny', !err && d.length > 15);
+    exprEl.innerHTML = exprStr ? exprStr : (calc.expression ? calc.expression : '&nbsp;');
+    const st = calc.state;
+    for (let i = 0; i < opEls.length; i++) {
+      opEls[i].classList.toggle('on', st.op === opEls[i].dataset.k);
+    }
+    histEl.innerHTML = history.map(h =>
+      '<div class="hist-row"><span class="hist-res">' + h.expr + '</span></div>'
+    ).join('');
+    const screen = document.querySelector('.screen');
+    screen.scrollTop = screen.scrollHeight;
+  }
+
+  function hit(key) {
+    var d = calc.display;
+    var st = calc.state;
+    var SYM = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+
+    if (key === '+' || key === '-' || key === '*' || key === '/') {
+      // 按运算符前拼接表达式：56 - 5 × 3 -
+      if (st.op === null) {
+        exprStr = d + ' ' + SYM[key] + ' ';
+      } else if (!st.fresh) {
+        exprStr += d + ' ' + SYM[key] + ' ';
+      } else {
+        // 换运算符：替换末尾
+        exprStr = exprStr.replace(/[+\-−×÷]\s*$/, SYM[key] + ' ');
+      }
+      calc.press(key);
+    } else if (key === '=') {
+      if (st.op && !st.error) {
+        var before = d;
+        calc.press('=');
+        var result = calc.display;
+        exprStr = exprStr + before + ' = ' + result;
+        history.push({ expr: exprStr, result: result });
+        if (history.length > 50) history.shift();
+      } else {
+        calc.press('=');
+      }
+    } else if (key === 'ac') {
+      exprStr = '';
+      history.length = 0;
+      calc.press(key);
+    } else {
+      if (exprStr.indexOf('=') !== -1) exprStr = '';
+      calc.press(key);
+    }
+    render();
+    playKeySound(key);
+  }
+
+  /* 多套按键音：木键/钢琴/电子/机械/水滴/静音 */
+  var _audioCtx = null;
+  var SOUND_MODE = 0;
+  var SOUND_NAMES = ['木键','钢琴','电子','机械','水滴','静音'];
+  try { SOUND_MODE = parseInt(localStorage.getItem('calc-sound') || '0'); if (isNaN(SOUND_MODE)) SOUND_MODE = 0; } catch(e){}
+
+  function _ensureCtx(){
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  }
+  function _tone(type, f0, f1, dur, vol, when){
+    var t = when || _audioCtx.currentTime;
+    var o = _audioCtx.createOscillator();
+    var g = _audioCtx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f0, t);
+    if (f1 && f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + dur * 0.8);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.connect(g); g.connect(_audioCtx.destination);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+  function _noise(dur, vol, freq, q){
+    var t = _audioCtx.currentTime;
+    var sz = Math.floor(_audioCtx.sampleRate * dur);
+    var buf = _audioCtx.createBuffer(1, sz, _audioCtx.sampleRate);
+    var d = buf.getChannelData(0);
+    for (var i = 0; i < sz; i++) d[i] = (Math.random()*2-1) * (1 - i/sz);
+    var src = _audioCtx.createBufferSource(); src.buffer = buf;
+    var g = _audioCtx.createGain();
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    var f = _audioCtx.createBiquadFilter();
+    f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = q || 1;
+    src.connect(f); f.connect(g); g.connect(_audioCtx.destination);
+    src.start(t);
+  }
+
+  function playKeySound(key){
+    if (SOUND_MODE === 5) { if (navigator.vibrate) navigator.vibrate(6); return; }
+    try {
+      _ensureCtx();
+      var t = _audioCtx.currentTime;
+      var base = (key === '=' || key === 'ac') ? 520 : 660;
+      if (SOUND_MODE === 0) {
+        // 木键
+        _tone('sine', base * 1.5, base * 0.6, 0.14, 0.18, t);
+        _noise(0.03, 0.08, 2500, 1.2);
+      } else if (SOUND_MODE === 1) {
+        // 钢琴：基音 + 两三个泛音，衰减稍长
+        _tone('sine', base, base, 0.4, 0.2, t);
+        _tone('sine', base * 2, base * 2, 0.25, 0.08, t);
+        _tone('sine', base * 3, base * 3, 0.15, 0.04, t);
+      } else if (SOUND_MODE === 2) {
+        // 电子：方波短嘟
+        _tone('square', base * 1.2, base * 0.8, 0.08, 0.12, t);
+      } else if (SOUND_MODE === 3) {
+        // 机械：金属咔哒
+        _tone('triangle', base * 4, base * 2, 0.04, 0.15, t);
+        _noise(0.02, 0.1, 5000, 2);
+      } else if (SOUND_MODE === 4) {
+        // 水滴：正弦快速上滑
+        _tone('sine', base * 0.6, base * 1.8, 0.18, 0.15, t);
+      }
+      if (navigator.vibrate) navigator.vibrate(6);
+    } catch(e){}
+  }
+
+  let acTimer = null;
+  function clearAcTimer() { if (acTimer) { clearTimeout(acTimer); acTimer = null; } }
+
+  function btnOf(e) {
+    return (e.target && e.target.closest) ? e.target.closest('.key') : null;
+  }
+
+  padEl.addEventListener('pointerdown', function (e) {
+    const btn = btnOf(e);
+    if (!btn) return;
+    if (e.cancelable) e.preventDefault();
+    const k = btn.dataset.k;
+    if (k === 'ac') {           /* 长按 AC = 退格 */
+      clearAcTimer();
+      acTimer = setTimeout(function () { acTimer = null; hit('back'); }, 480);
+      return;
+    }
+    hit(k);
+  });
+
+  padEl.addEventListener('pointerup', function (e) {
+    const btn = btnOf(e);
+    if (btn && btn.dataset.k === 'ac' && acTimer) { clearAcTimer(); hit('ac'); }
+  });
+
+  padEl.addEventListener('pointercancel', clearAcTimer);
+  padEl.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+  /* 实体键盘（桌面调试 / 外接键盘） */
+  const KEYMAP = {
+    '0':'0','1':'1','2':'2','3':'3','4':'4','5':'5','6':'6','7':'7','8':'8','9':'9',
+    '.':'.', ',':'.', '+':'+', '-':'-', '*':'*', 'x':'*', 'X':'*', '/':'/',
+    '=':'=', 'Enter':'=', 'Escape':'ac', 'c':'ac', 'C':'ac', 'Delete':'ac',
+    'Backspace':'back', '%':'pct', 'n':'neg'
+  };
+  window.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = KEYMAP[e.key];
+    if (!k) return;
+    e.preventDefault();
+    clearAcTimer();
+    hit(k);
+  });
+
+  render();
+  (function soundToggle(){
+    var btn = document.getElementById('soundToggle');
+    var icons = ['🎵','🎹','🎮','⚙','💧','🔇'];
+    function apply(){
+      btn.textContent = icons[SOUND_MODE] || '🎵';
+      btn.title = '音效：' + (SOUND_NAMES[SOUND_MODE] || '');
+      btn.style.opacity = SOUND_MODE === 5 ? '.35' : '1';
+    }
+    btn.addEventListener('click', function(){
+      SOUND_MODE = (SOUND_MODE + 1) % SOUND_NAMES.length;
+      try { localStorage.setItem('calc-sound', String(SOUND_MODE)); } catch(e){}
+      apply();
+      try { playKeySound('1'); } catch(e){}
+    });
+    apply();
+  })();  window.__calc = calc;      /* 供自动化测试调用 */
+  window.__render = render;
+})();
+
+/* ============ 内置自检：打开 index.html#selftest 触发 ============ */
+(function selftest() {
+  if (!/selftest/.test(location.search + location.hash)) return;
+  document.documentElement.setAttribute('data-selftest', '');
+
+  const CASES = [
+    { n: '简单加法 12+5', k: ['1','2','+','5','='], d: '17', e: '12 + 5 =' },
+    { n: '顺序运算 3+4×2', k: ['3','+','4','*','2','='], d: '14' },
+    { n: '浮点修正 0.1+0.2', k: ['.','1','+','.','2','='], d: '0.3' },
+    { n: '连按等号 5+3==', k: ['5','+','3','=','='], d: '11' },
+    { n: '除零保护', k: ['8','/','0','='], d: '错误' },
+    { n: '除零后恢复输入', k: ['8','/','0','=','7'], d: '7' },
+    { n: '百分比 50%', k: ['5','0','pct'], d: '0.5' },
+    { n: '正负号', k: ['9','neg'], d: '-9' },
+    { n: '正负号回正', k: ['9','neg','neg'], d: '9' },
+    { n: '连按运算符只换不重算', k: ['5','+','*','3','='], d: '15' },
+    { n: '结果继续运算', k: ['2','+','3','=','*','4','='], d: '20' },
+    { n: '小数点去重', k: ['1','.','.','5'], d: '1.5' },
+    { n: '前导零合并', k: ['0','0','0','5'], d: '5' },
+    { n: '大数科学计数', k: ['9','9','9','9','9','9','9','9','*','9','9','9','9','9','9','9','9','='], d: '9.9999998e15' },
+    { n: '退格', k: ['1','2','3','back'], d: '12' },
+    { n: '全清 AC', k: ['1','2','3','ac'], d: '0' },
+    { n: '整除不带小数点', k: ['6','/','3','='], d: '2' },
+    { n: '减法得负数', k: ['5','-','9','='], d: '-4' },
+    { n: '连加不重算', k: ['2','+','3','+','4','='], d: '9' },
+    { n: '空按等号', k: ['='], d: '0' },
+    { n: '运算符高亮状态', k: ['7','+'], d: '7', op: '+' },
+    { n: '结果后直接输数字', k: ['2','+','3','=','9'], d: '9' }
+  ];
+
+  const out = [];
+  let pass = 0, fail = 0;
+  CASES.forEach(function (c, i) {
+    const cc = createCalc();
+    c.k.forEach(function (key) { cc.press(key); });
+    const okD = cc.display === c.d;
+    const okE = (c.e === undefined) || cc.expression === c.e;
+    const okOp = (c.op === undefined) || cc.state.op === c.op;
+    const ok = okD && okE && okOp;
+    if (ok) pass++; else fail++;
+    out.push((ok ? 'PASS ' : 'FAIL ') + String(i + 1).padStart(2, '0') + '  ' + c.n +
+      (ok ? '' : '   → 期望 ' + c.d + '，实际 ' + cc.display));
+  });
+
+  const summary = '自检 ' + pass + '/' + CASES.length + ' 通过' + (fail ? '（' + fail + ' 条失败）' : '');
+  const el = document.getElementById('selftest');
+  el.textContent = summary + '\n\n' + out.join('\n');
+  el.setAttribute('data-result', fail === 0 ? 'PASS' : 'FAIL');
+  el.setAttribute('data-pass', String(pass));
+  el.setAttribute('data-total', String(CASES.length));
+  document.title = 'SELFTEST ' + (fail === 0 ? 'PASS' : 'FAIL') + ' ' + pass + '/' + CASES.length;
+})();
+
+/* ============ 演示态：打开 index.html#demo 预置一次运算（截图/讲解用）============ */
+(function demo() {
+  if (!/demo/.test(location.hash)) return;
+  ['1','2','3','4','*','5','='].forEach(function (k) { window.__calc.press(k); });
+  window.__render();
+})();
+/* 下雨效果：生成 60 条雨滴 */
+(function rain(){
+  var container = document.getElementById('rain');
+  // 1. 细雨滴下落
+  for (var i = 0; i < 50; i++) {
+    var r = document.createElement('div');
+    r.className = 'raindrop';
+    r.style.left = (Math.random() * 100) + '%';
+    r.style.animationDuration = (0.5 + Math.random() * 0.7) + 's';
+    r.style.animationDelay = (Math.random() * 2) + 's';
+    r.style.opacity = 0.2 + Math.random() * 0.4;
+    r.style.height = (40 + Math.random() * 50) + 'px';
+    container.appendChild(r);
+  }
+  // 2. 玻璃水珠（大小不一）
+  for (var j = 0; j < 25; j++) {
+    var d = document.createElement('div');
+    d.className = 'glass-drop';
+    var size = 8 + Math.random() * 22;
+    d.style.width = size + 'px';
+    d.style.height = size + 'px';
+    d.style.left = (Math.random() * 100) + '%';
+    d.style.animationDuration = (4 + Math.random() * 6) + 's';
+    d.style.animationDelay = (Math.random() * 5) + 's';
+    d.style.opacity = 0.4 + Math.random() * 0.5;
+    container.appendChild(d);
+  }
+  // 3. 水痕拖尾
+  for (var k = 0; k < 20; k++) {
+    var t = document.createElement('div');
+    t.className = 'trail';
+    t.style.left = (Math.random() * 100) + '%';
+    t.style.height = (80 + Math.random() * 120) + 'px';
+    t.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    t.style.animationDelay = (Math.random() * 3) + 's';
+    container.appendChild(t);
+  }
+})();
+(function rainToggle(){
+  var btn = document.getElementById('rainToggle');
+  var container = document.getElementById('rain');
+  var on = true;
+  try { on = localStorage.getItem('calc-rain') !== 'off'; } catch(e){}
+  function apply(){
+    container.style.display = on ? '' : 'none';
+    btn.style.opacity = on ? '1' : '.35';
+    btn.textContent = on ? '🌧' : '☀';
+  }
+  btn.addEventListener('click', function(){
+    on = !on;
+    try { localStorage.setItem('calc-rain', on ? 'on' : 'off'); } catch(e){}
+    apply();
+  });
+  apply();
+})();
+
+(function themeToggle(){
+  var THEMES = [
+    { id: '',       name: '浅色玻璃', desc: '粉蓝马卡龙 + 毛玻璃按键',   swatch: 'linear-gradient(135deg,#FF8FB1,#7C9EFF)' },
+    { id: 'dark',   name: '深色玻璃', desc: '深紫黑底 + 霓虹光斑',       swatch: 'linear-gradient(135deg,#302b63,#FF6A3D)' },
+    { id: 'metal',  name: '金属银',   desc: '银灰拉丝 + 铜色运算键',     swatch: 'linear-gradient(135deg,#f5f7fa,#c8cdd5)' },
+    { id: 'nature', name: '自然绿',   desc: '白底淡绿 + 护眼深绿数字',   swatch: 'linear-gradient(135deg,#ffffff,#a5d6a7)' },
+    { id: 'paper',  name: '牛皮纸',   desc: '米黄纸感 + 棕色素雅',       swatch: 'linear-gradient(135deg,#faf6ec,#e8e0cc)' },
+    { id: 'cream',  name: '奶油',     desc: '奶油色新拟物凸起按键',       swatch: 'linear-gradient(135deg,#f5f0e8,#d8cdb8)' },
+    { id: 'metal3d', name: '金属立体', desc: '深底 + 银色拉丝金属键 + 金色运算符', swatch: 'linear-gradient(135deg,#2a2d36,#c0c0c0)' },
+    { id: 'retro',   name: '复古撕纸', desc: '手撕纸圆片 + 便签显示 + 橙纸运算键', swatch: 'linear-gradient(135deg,#faf8f3,#F5821F)' },
+    { id: 'cyber',    name: '赛博朋克', desc: '紫黑底 + 霓虹青粉发光键',           swatch: 'linear-gradient(135deg,#0a0a1a,#FF00FF)' },
+    { id: 'wood',     name: '木纹',     desc: '深棕木底 + 米棕键 + 琥珀运算键',    swatch: 'linear-gradient(135deg,#5d4037,#d7ccc8)' },
+    { id: 'jelly',    name: '果冻',     desc: '马卡龙色半透明果冻凸起键',          swatch: 'linear-gradient(135deg,#fff3e0,#FF6B9D)' },
+    { id: 'sakura',   name: '樱花',     desc: '粉白底 + 白圆键 + 品红运算键',      swatch: 'linear-gradient(135deg,#fff0f3,#FF4081)' },
+    { id: 'mint',     name: '薄荷',     desc: '青绿底 + 白键 + 深绿运算键',        swatch: 'linear-gradient(135deg,#e0f2f1,#00897b)' },
+    { id: 'sunset',   name: '黄昏',     desc: '紫橙渐变 + 玻璃键 + 金黄运算键',     swatch: 'linear-gradient(135deg,#2d1b4e,#f39c12)' },
+    { id: 'ocean',    name: '海洋',     desc: '深蓝底 + 透蓝键 + 青色运算键',      swatch: 'linear-gradient(135deg,#0d1b3e,#40c4FF)' }
+  ];
+  var btn = document.getElementById('themeToggle');
+  var modal = document.getElementById('themeModal');
+  var mask = document.getElementById('themeMask');
+  var list = document.getElementById('themeList');
+  var curId = '';
+
+  function apply(id){
+    curId = id;
+    if (id) document.documentElement.setAttribute('data-theme', id);
+    else document.documentElement.removeAttribute('data-theme');
+    try { localStorage.setItem('calc-theme', id); } catch(e){}
+    // 更新按钮图标
+    var t = THEMES[0];
+    for (var i=0;i<THEMES.length;i++) if (THEMES[i].id===id) t = THEMES[i];
+    btn.textContent = t.name.charAt(0);
+    btn.title = t.name;
+    // 更新面板勾选态
+    var items = list.children;
+    for (var j=0;j<items.length;j++){
+      items[j].classList.toggle('active', items[j].getAttribute('data-id')===id);
+    }
+  }
+  function open(){ modal.hidden = false; }
+  function close(){ modal.hidden = true; }
+
+  // 构建列表
+  THEMES.forEach(function(t){
+    var item = document.createElement('div');
+    item.className = 'theme-item';
+    item.setAttribute('data-id', t.id);
+    item.innerHTML =
+      '<div class="theme-swatch" style="background:'+t.swatch+'"></div>' +
+      '<div class="theme-info"><div class="theme-name">'+t.name+'</div>' +
+      '<div class="theme-desc">'+t.desc+'</div></div>' +
+      '<div class="theme-check">✓</div>';
+    item.addEventListener('click', function(){ apply(t.id); close(); });
+    list.appendChild(item);
+  });
+
+  btn.addEventListener('click', open);
+  mask.addEventListener('click', close);
+
+  // 初始化
+  var saved = '';
+  try { saved = localStorage.getItem('calc-theme') || ''; } catch(e){}
+  var m = (location.search + location.hash).match(/theme=([a-z0-9]*)/);
+  if (m) saved = m[1];
+  apply(saved);
+})();
+</script>
+</body>
+</html>
