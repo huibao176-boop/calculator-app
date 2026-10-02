@@ -1,0 +1,10 @@
+{
+  "appId": "com.abu.fullclock",
+  "appName": "全屏时钟",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#000000",
+    "scrollEnabled": false
+  }
+}
