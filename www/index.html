@@ -151,17 +151,18 @@ html,body{height:100%;overflow:hidden;background:#000;touch-action:none;
   line-height:1.55;font-weight:500}
 
 /* ---------- 15 电视极简胶囊 ---------- */
-#sc15{background:#f3f3f0;display:none;align-items:center;justify-content:center;gap:7vmin}
+#sc15{background:#f3f3f0;display:none;align-items:center;justify-content:center;gap:6vmin}
 #sc15.active{display:flex}
 #s15arc{position:absolute;left:-26vmin;bottom:-30vmin;width:118vmin;height:118vmin;opacity:.9}
-.s15left{text-align:center;color:#8f8f8a;position:relative}
-.s15mon{font-size:3.2vmin;letter-spacing:.45em;text-indent:.45em}
-.s15day{font-size:10vmin;font-weight:300;color:#4a4a46;line-height:1.15;font-variant-numeric:tabular-nums}
-.s15wk{font-size:3.2vmin;letter-spacing:.4em;text-indent:.4em}
-.s15pill{position:relative;display:flex;align-items:center;gap:3.6vmin;background:#fff;border-radius:999px;
-  padding:4.2vmin 7vmin;box-shadow:0 1.6vmin 5vmin rgba(80,80,70,.18)}
-.s15ring{width:10vmin;height:10vmin;flex:none}
-.s15pix svg{height:9.6vmin;display:block}
+#s15arcv{height:64vmin;width:auto;flex:none;opacity:.92}
+.s15left{text-align:center;color:#8f8f8a;position:relative;flex:none}
+.s15mon{font-size:3vmin;letter-spacing:.45em;text-indent:.45em}
+.s15day{font-size:8vmin;font-weight:300;color:#4a4a46;line-height:1.15;font-variant-numeric:tabular-nums}
+.s15wk{font-size:3vmin;letter-spacing:.4em;text-indent:.4em}
+.s15pill{position:relative;display:flex;align-items:center;gap:2.6vmin;background:#fff;border-radius:999px;
+  padding:3vmin 5vmin;box-shadow:0 1.6vmin 5vmin rgba(80,80,70,.18);flex:none}
+.s15ring{width:7.2vmin;height:7.2vmin;flex:none}
+.s15pix svg{height:7.2vmin;display:block}
 
 /* ---------- 舞台层（强制横屏时整体旋转） ---------- */
 #stage{position:fixed;top:0;left:0;width:100vw;height:100vh}
@@ -288,6 +289,7 @@ html.fl #stage{width:100vh;height:100vw;transform:translateX(100vw) rotate(90deg
 <section class="scene" id="sc15">
   <svg id="s15arc" viewBox="0 0 400 400"></svg>
   <div class="s15left"><div class="s15mon" id="s15mon">十月</div><div class="s15day" id="s15day">2</div><div class="s15wk" id="s15wk">星期五</div></div>
+  <svg id="s15arcv" viewBox="0 0 200 1000"></svg>
   <div class="s15pill">
     <svg class="s15ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#efefec" stroke-width="6"/><circle id="s15ringArc" cx="30" cy="30" r="24" fill="none" stroke="#f5a623" stroke-width="6" stroke-linecap="round" transform="rotate(-90 30 30)"/></svg>
     <div class="s15pix"><svg id="s15pixsvg" viewBox="0 0 0 0"></svg></div>
@@ -1512,15 +1514,15 @@ const PIX={
  "0":[14,17,19,21,25,17,14],"1":[4,12,4,4,4,4,14],"2":[14,17,1,2,4,8,31],
  "3":[31,2,4,2,1,17,14],"4":[2,6,10,18,31,2,2],"5":[31,16,30,1,1,17,14],
  "6":[6,8,16,30,17,17,14],"7":[31,1,2,4,8,8,8],"8":[14,17,17,14,17,17,14],
- "9":[14,17,17,15,1,2,12],":":[0,7,7,0,7,7,0]};
-function pixRender(el,str,color){
+ "9":[14,17,17,15,1,2,12],":":[0,4,0,0,0,4,0]};
+function pixRender(el,str,color,colonColor){
   const C=10;let x=0,parts="";
   for(const ch of str){
     const rows=PIX[ch];if(!rows){x+=6*C;continue;}
     let g="";
     for(let r=0;r<7;r++)for(let c=0;c<5;c++)
       if(rows[r]>>(4-c)&1)g+=`<rect x="${x+c*C}" y="${r*C}" width="${C*0.86}" height="${C*0.86}" rx="${C*0.3}"/>`;
-    parts+=`<g fill="${color}">${g}</g>`;
+    parts+=`<g fill="${ch===":"?(colonColor||color):color}"${ch===":"?' id="s15colon"':""}>${g}</g>`;
     x+=(ch===":"?3:5)*C+ (ch===":"?2:1)*C; /* 冒号窄、数字间距1格 */
   }
   el.setAttribute("viewBox",`0 0 ${x-C} ${7*C}`);
@@ -1553,6 +1555,22 @@ function pixRender(el,str,color){
   }
   svg.innerHTML=h;
 })();
+
+/* ===== 样式15 右侧竖弧刻度（大圆右缘，每秒向下滚动一格） ===== */
+const ARCV={cx:-2020,cy:480,R:2191,aTop:-12.4,step:1.36,n:20};
+function drawArcV(off){
+  const svg=$("#s15arcv");if(!svg)return;
+  const {cx,cy,R,aTop,step,n}=ARCV;let h="";
+  for(let slot=0;slot<n;slot++){
+    const abs=slot+off;
+    const a=(aTop+slot*step)*Math.PI/180;
+    const big=abs%5===0;
+    const r0=big?R-31:R-18,r1=big?R+34:R+19;
+    h+=`<line x1="${(cx+Math.cos(a)*r0).toFixed(1)}" y1="${(cy+Math.sin(a)*r0).toFixed(1)}" x2="${(cx+Math.cos(a)*r1).toFixed(1)}" y2="${(cy+Math.sin(a)*r1).toFixed(1)}" stroke="#9a9a94" stroke-width="${big?3.5:2}" stroke-linecap="round"/>`;
+  }
+  svg.innerHTML=h;
+}
+drawArcV(0);
 
 /* ===== 农历/日期信息 ===== */
 let dayInfo=null,dayKey="";
@@ -1638,7 +1656,10 @@ const scenes=[
    $("#s15day").textContent=now.getDate();
    $("#s15wk").textContent="星期"+WEEK[now.getDay()];
    const str=p2(now.getHours())+":"+p2(now.getMinutes());
-   if($("#s15pixsvg").dataset.v!==str){$("#s15pixsvg").dataset.v=str;pixRender($("#s15pixsvg"),str,"#1c1c1c");}
+   if($("#s15pixsvg").dataset.v!==str){$("#s15pixsvg").dataset.v=str;pixRender($("#s15pixsvg"),str,"#1c1c1c","#f5a623");}
+   const col=document.getElementById("s15colon");
+   if(col)col.setAttribute("opacity",now.getSeconds()%2?"0":"1"); /* 冒号每秒闪 */
+   drawArcV(now.getSeconds()); /* 竖弧刻度每秒向下走一格 */
    const pct=(now.getHours()*3600+now.getMinutes()*60+now.getSeconds())/86400;
    $("#s15ringArc").setAttribute("stroke-dasharray",(pct*150.8)+" 150.8");
  }},
